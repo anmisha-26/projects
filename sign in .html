@@ -1,0 +1,91 @@
+<html>
+  <head>
+     <title> Sign In </title> 
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .SignIn-box {
+            background-color: white;
+            padding: 30px;
+            width: 300px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            color:#555;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #002aff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0c00b3;
+        }
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+    </head>
+    <body>
+    <div class="SignIn-box">
+        <h1>SignIn</h1>
+        <label>Username</label>
+        <input type="text" id="Username">
+        <label>Password</label>
+        <input type="password" id="password">
+        <button id="SignInButton">SignIn</button>
+        <p id="message"></p>
+    </div>
+    <script>
+        let Username = document.getElementById("Username");
+        let password = document.getElementById("password");
+        let SignInButton = document.getElementById("SignInButton");
+        let message = document.getElementById("message");
+        SignInButton.addEventListener("click", function() {
+            let user = Username.value;
+            let pass = password.value;
+            if (user == "sahini"&& pass == 4321)
+        {
+                localStorage.setItem("Username", user);
+                localStorage.setItem("password", pass);
+                message.innerHTML = "valid username";
+                message.style.color = "green";
+            }
+            else {
+                message.innerHTML = "invalid username";
+                message.style.color = "red";
+            }
+        });
+    </script>
+  </body>
+</html>
+

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #dff3ff;
+            margin: 0;
+            padding: 40px;
+        }
+        .container {
+            width: 85%;
+            margin: auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #222;
+            margin-bottom: 30px;
+        }
+        .student-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            font-size: 18px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th {
+            background-color: #38aee8;
+            color: white;
+            padding: 14px;
+            font-size: 17px;
+        }
+        td {
+            padding: 13px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+            background-color: #f5faff;
+        }
+        .summary {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #eef8ff;
+            border-radius: 8px;
+        }
+        .summary p {
+            font-size: 17px;
+        }
+        .pass {
+            color: green;
+            font-weight: bold;
+        }
+        .fail {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🎓 Student Management System</h1>
+    <div id="output"></div>
+</div>
+<script>
+    let no_of_students = Number(prompt("Enter number of students"));
+    let fail_student = 0;
+    let pass_student = 0;
+    for (let student = 1; student <= no_of_students; student++) {
+        let name = prompt("Enter student name");
+        let rollNumber = prompt("Enter roll number");
+        let English = Number(prompt("Enter English marks"));
+        let Maths = Number(prompt("Enter Maths marks"));
+        let Science = Number(prompt("Enter Science marks"));
+        let Hindi = Number(prompt("Enter Hindi marks"));
+        let Social = Number(prompt("Enter Social marks"));
+        let total = English + Maths + Science + Hindi + Social;
+        let avg = total / 5;
+        let percentage = (total / 500) * 100;
+        let result;
+        if (
+            English >= 35 &&
+            Maths >= 35 &&
+            Science >= 35 &&
+            Hindi >= 35 &&
+            Social >= 35
+        ) {
+            result = "Pass";
+            pass_student++;
+        } else {
+            result = "Fail";
+            fail_student++;
+        }
+        let grade;
+        if (result == "Fail") {
+            grade = "F";
+        } 
+        else if (percentage >= 90) {
+            grade = "A";
+        } 
+        else if (percentage >= 80) {
+            grade = "B";
+        } 
+        else if (percentage >= 70) {
+            grade = "C";
+        } 
+        else if (percentage >= 60) {
+            grade = "D";
+        } 
+        else {
+            grade = "E";
+        }
+        let output = document.getElementById("output");
+        output.innerHTML += `
+            <div class="student-details">
+                <div>
+                    <b>Student Name:</b> ${name}
+                </div>
+                <div>
+                    <b>Roll Number:</b> ${rollNumber}
+                </div>
+            </div>
+            <table>
+                <tr>
+                    <th>S.No</th>
+                    <th>Subject</th>
+                    <th>Marks</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>English</td>
+                    <td>${English}</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Mathematics</td>
+                    <td>${Maths}</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Science</td>
+                    <td>${Science}</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Hindi</td>
+                    <td>${Hindi}</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Social</td>
+                    <td>${Social}</td>
+                </tr>
+            </table>
+            <div class="summary">
+                <p><b>Total Marks:</b> ${total} / 500</p>
+                <p><b>Average:</b> ${avg.toFixed(2)}</p>
+                <p><b>Percentage:</b> ${percentage.toFixed(2)}%</p>
+                <p><b>Grade:</b> ${grade}</p>
+                <p>
+                    <b>Result:</b>
+                    <span class="${result == "Pass" ? "pass" : "fail"}">
+                        ${result}
+                    </span>
+                </p>
+            </div>
+            <br>
+        `;
+    }
+    document.getElementById("output").innerHTML += `
+        <div class="summary">
+            <h2>Overall Summary</h2>
+            <p>
+                <b>No. of Students:</b> ${no_of_students}
+            </p>
+            <p>
+                <b>Pass Students:</b> ${pass_student}
+            </p>
+            <p>
+                <b>Fail Students:</b> ${fail_student}
+            </p>
+        </div>
+    `;
+</script>
+</body>
+</html>

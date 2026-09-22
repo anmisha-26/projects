@@ -1,0 +1,204 @@
+<!Doctype html>
+<html>
+    <head>
+        <title>To_Do_List</title>
+        <style>
+            body{
+                font-family:Arial;
+                padding:30px;
+            }
+            input,select,button{
+                padding:8px;
+                margin:5px;
+            }
+            li{
+                margin:10px;
+                padding:10px;
+                border:1px solid gray;
+                width:500px;
+            }
+            .completed{
+                text-decoration:line-through;
+            }
+            .high{
+                color:red;
+            }
+            .medium{
+                color:orange;
+            }
+            .low{
+                color:green;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>To_Do_List</h1>
+        <input
+              type="text"
+              id="taskInput"
+              placeholder="Enter task"
+        >
+        <input 
+              type="date"
+              id="taskDate"
+        >
+        <select id="priority">
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+        </select>  
+        <button id="addButton">
+            Add Task
+        </button>
+        <button id="clearButton">
+            Clear All
+        </button> 
+        <br><br>
+        <input  
+              type="text"
+              id="searchInput"
+              placeholder="Searchtask"
+        >
+        <select id="filter">
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+        </select> 
+        <h3 id="counter">
+            Total:0|Completed:0|Pending:0
+        </h3>
+        <ol id="taskList"></ol>   
+        <script>
+            let taskInput=document.getElementById("taskInput");
+            let taskDate=document.getElementById("taskDate");
+            let priority=document.getElementById("priority");
+            let addButton=document.getElementById("addButton");
+            let clearButton=document.getElementById("clearButton");
+            let searchInput=document.getElementById("searchInput");
+            let filter=document.getElementById("filter");
+            let taskList=document.getElementById("taskList");
+            let counter=document.getElementById("counter");
+            let tasks=[];
+            let editIndex=-1;
+            addButton.addEventListener("click",function(){
+                let task=taskInput.value.trim();
+                if(task===""){
+                    alert("please enter a task");
+                    return;
+                }
+                if(editIndex!==-1){
+                    tasks[editIndex].name=task;
+                    tasks[editIndex].date=taskDate.value;
+                    tasks[editIndex].priority=priority.value;
+                    editIndex=-1;
+                    addButton.textContent="Add Task";
+                }
+                else{
+                    let newTask={
+                        name:task,
+                        date:taskDate.value,
+                        priority:priority.value,
+                        completed:false
+                    };
+                    tasks.push(newTask);
+                }
+                taskInput.value="";
+                taskDate.value="";
+                displayTasks();
+            });
+            function displayTasks(){
+                taskList.innerHTML="";
+                let searchText=searchInput.value.toLowerCase();
+                let selectedFilter=filter.value;
+                let displayNumber=1;
+                tasks.forEach(function(task,index){
+                    if(
+                        !task.name   
+                              .toLowerCase()
+                              .includes(searchText)
+                    ){
+                        return;
+                    }
+                    if(
+                        selectedFilter==="pending"
+                        && task.completed===true
+                    ){
+                        return;
+                    }
+                    if(
+                        selectedFilter==="completed"
+                        && task.completed===false
+                    ){
+                        return;
+                    }
+                    let li=document.createElement("li");
+                    let span=document.createElement("span");
+                    span.textContent=task.name+"";
+                    if(task.completed){
+                        span.classList.add("completed");
+                    }
+                    let priorityText=document.createElement("span");
+                    priorityText.textContent="["+task.priority+"]";
+                    priorityText.classList.add(task.priority.toLowerCase());
+                    let dateText=document.createElement("span");
+                    if(task.date!==""){
+                        dateText.textContent=""+task.date;
+                    }
+                    let completeButton=document.createElement("button");
+                    completeButton.textContent="Complete";
+                    completeButton.addEventListener("click",function(){
+                        task.completed=!task.completed;
+                        displayTasks();
+                    });
+                    let editButton=document.createElement("button");
+                    editButton.textContent="Edit";
+                    editButton.addEventListener("click",function(){
+                        taskInput.value=task.name;
+                        taskDate.value=task.date;
+                        priority.value=task.priority;
+                        editIndex=index;
+                        addbutton.textContent="Update Task";
+                    });
+                    let deleteButton=document.createElement("button");
+                    deleteButton.textContent="Delete";
+                    deleteButton.addEventListener("click",function(){
+                        tasks.splice(index,1);
+                        displayTasks();
+                    });
+                    li.appendChild(span);
+                    li.appendChild(priorityText);
+                    li.appendChild(dateText);
+                    li.appendChild(completeButton);
+                    li.appendChild(editButton);
+                    li.appendChild(deleteButton);
+                    taskList.appendChild(li);
+                    displayNumber++;
+                });
+                updateCounter();
+                }
+                function updateCounter(){
+                    let total=tasks.length;
+                    let completed=tasks.filter(function(task){
+                        return task.completed==true;
+                    }).length;
+                    let pending=total-completed;
+                    counter.textContent="Total:"+total+"|Completed:"+completed+"|Pending:"+pending;            
+                  }
+            clearButton.addEventListener("click",function(){
+                tasks=[];
+                displayTasks();
+            });
+            searchInput.addEventListener("input",function(){
+                displayTasks();
+            });
+            filter.addEventListener("change",function(){
+                displayTasks();
+            });
+            taskInput.addEventListener("keydown",function(event){
+                if(event.key==="Enter"){
+                    addButton.click();
+                }
+            });
+        </script>        
+    </body>
+</html>

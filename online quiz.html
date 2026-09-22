@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Online Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      width: 600px;
+      text-align: center;
+    }
+    h1 {
+      color: #007BFF;
+    }
+    .hidden {
+      display: none;
+    }
+    .question {
+      margin: 20px 0;
+      text-align: left;
+    }
+    .options label {
+      display: block;
+      margin: 5px 0;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 10px;
+      border: none;
+      border-radius: 5px;
+      background: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #timer {
+      font-weight: bold;
+      color: red;
+    }
+    #result {
+      font-size: 18px;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <!-- Starting Page -->
+    <div id="startPage">
+      <h1>🎯 Welcome to the Online Quiz</h1>
+      <p>Instructions:</p>
+      <ul style="text-align:left;">
+        <li>You have 60 seconds to complete the quiz.</li>
+        <li>There are 5 questions.</li>
+        <li>You can skip questions.</li>
+        <li>Your score will be shown at the end.</li>
+      </ul>
+      <button onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <!-- Quiz Page -->
+    <div id="quizPage" class="hidden">
+      <div id="timer">Time Left: 60s</div>
+      <div id="questionContainer"></div>
+      <button onclick="nextQuestion()">Next</button>
+      <button onclick="skipQuestion()">Skip</button>
+      <button onclick="completeQuiz()">Complete Quiz</button>
+    </div>
+
+    <!-- Result Page -->
+    <div id="resultPage" class="hidden">
+      <h1>Quiz Completed ✅</h1>
+      <div id="result"></div>
+      <button onclick="restartQuiz()">Keep Practicing Again</button>
+      <button onclick="closeQuiz()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      { q: "What is the capital of India?", options: ["Delhi", "Mumbai", "Kolkata", "Chennai"], answer: "Delhi" },
+      { q: "Which language is used for web apps?", options: ["Python", "JavaScript", "C++", "Java"], answer: "JavaScript" },
+      { q: "HTML stands for?", options: ["Hyper Text Markup Language", "High Text Machine Language", "Hyperlinks Text Mark Language", "None"], answer: "Hyper Text Markup Language" },
+      { q: "CSS is used for?", options: ["Styling", "Logic", "Database", "Networking"], answer: "Styling" },
+      { q: "Which is a backend language?", options: ["HTML", "CSS", "Python", "XML"], answer: "Python" }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let answered = 0;
+    let skipped = 0;
+    let timer;
+    let timeLeft = 60;
+
+    function startQuiz() {
+      document.getElementById("startPage").classList.add("hidden");
+      document.getElementById("quizPage").classList.remove("hidden");
+      showQuestion();
+      startTimer();
+    }
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      const container = document.getElementById("questionContainer");
+      container.innerHTML = `
+        <div class="question"><strong>Q${currentQuestion+1}:</strong> ${q.q}</div>
+        <div class="options">
+          ${q.options.map(opt => `<label><input type="radio" name="option" value="${opt}"> ${opt}</label>`).join("")}
+        </div>
+      `;
+    }
+
+    function nextQuestion() {
+      const selected = document.querySelector('input[name="option"]:checked');
+      if (selected) {
+        answered++;
+        if (selected.value === questions[currentQuestion].answer) {
+          score++;
+        }
+      }
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        showQuestion();
+      } else {
+        completeQuiz();
+      }
+    }
+
+    function skipQuestion() {
+      skipped++;
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        showQuestion();
+      } else {
+        completeQuiz();
+      }
+    }
+
+    function completeQuiz() {
+      clearInterval(timer);
+      document.getElementById("quizPage").classList.add("hidden");
+      document.getElementById("resultPage").classList.remove("hidden");
+      document.getElementById("result").innerHTML = `
+        Score: ${score} / ${questions.length} <br>
+        Answered: ${answered} <br>
+        Skipped: ${skipped}
+      `;
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      answered = 0;
+      skipped = 0;
+      timeLeft = 60;
+      document.getElementById("resultPage").classList.add("hidden");
+      document.getElementById("quizPage").classList.remove("hidden");
+      showQuestion();
+      startTimer();
+    }
+
+    function closeQuiz() {
+      document.getElementById("resultPage").innerHTML = "<h2>Quiz Closed ❌</h2>";
+    }
+
+    function startTimer() {
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").textContent = `Time Left: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          completeQuiz();
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
